@@ -19,17 +19,15 @@ import com.lily.util.MessageUtil;
 public class WeiXin {
 
 	/*
-	@ResponseBody
-	@RequestMapping(value = "Verify", method = RequestMethod.GET)
-	public String verify(HttpServletRequest request, String echostr, String timestamp, String nonce, String signature) {
-		if (CryptoUtil.checkSignature(signature, timestamp, nonce)) {
-			return echostr;
-		} else {
-			return null;
-		}
-	}
-    */
-	
+	 * @ResponseBody
+	 * 
+	 * @RequestMapping(value = "Verify", method = RequestMethod.GET) public
+	 * String verify(HttpServletRequest request, String echostr, String
+	 * timestamp, String nonce, String signature) { if
+	 * (CryptoUtil.checkSignature(signature, timestamp, nonce)) { return
+	 * echostr; } else { return null; } }
+	 */
+
 	@ResponseBody
 	@RequestMapping(value = "Verify", method = RequestMethod.POST)
 	public String verify(HttpServletRequest request, String timestamp, String nonce, String signature,
@@ -46,7 +44,7 @@ public class WeiXin {
 				String msgType = (String) map.get("MsgType");
 				String message = null;
 				TuLingApi tl = new TuLingApi();
-				if (msgType.equals(MessageUtil.MESSAGE_TYPE_TEXT)) {
+				if (MessageUtil.MESSAGE_TYPE_TEXT.equals(msgType)) {
 					// 收到文本信息
 					String content = (String) map.get("Content");
 					// 往第三方发送消息并返回数据
@@ -69,7 +67,7 @@ public class WeiXin {
 						text.setContent("识别不了的信息");
 						message = MessageUtil.messageToXML(text);
 					}
-				} else if (msgType.equals(MessageUtil.MESSAGE_TYPE_EVENT)) {
+				} else if (MessageUtil.MESSAGE_TYPE_EVENT.equals(msgType)) {
 					String event = map.get("Event");
 					if (event.equals(MessageUtil.EVENT_TYPE_SUBSCRIBE)) {
 						TextResponse text = new TextResponse();
@@ -87,7 +85,7 @@ public class WeiXin {
 				e.printStackTrace();
 				return null;
 			}
-		}else{
+		} else {
 			return null;
 		}
 	}

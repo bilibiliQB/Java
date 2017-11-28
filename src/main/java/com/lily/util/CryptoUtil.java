@@ -1,25 +1,45 @@
 package com.lily.util;
 
 import java.io.UnsupportedEncodingException;
+
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.stereotype.Component;
+
 import com.weixin.aes.AesException;
 import com.weixin.aes.WXBizMsgCrypt;
 
+@Component
+@PropertySource("classpath:config.properties")
 public class CryptoUtil {
+
 	// TOKEN
-	private static final String TOKEN = "lilygod";
+	private static String TOKEN;
+
+	@Value("${wx.token}")
+	private void setTOKEN(String token) {
+		TOKEN = token;
+	}
 
 	// 微信生成的 ASEKey
-	private static final String ENCODINGAESKEY = "3j5cODFY8QECcVCIP5EQ30Nqh5tgnSrOz3ixXtfUPAP";
+	private static String ENCODINGAESKEY;
+
+	@Value("${wx.encodingaeskey}")
+	private void setENCODINGAESKEY(String encodingaeskey) {
+		ENCODINGAESKEY = encodingaeskey;
+	}
 
 	// 应用的AppId
-	private static final String APPID = "wx58c15c48d33477c5";
+	private static String APPID;
 
-	// APPSECRET
-	private static final String APPSECRET = "0687558db0fd14c6048f8c39fda77f8e";
+	@Value("${wx.appid}")
+	private void setAPPID(String appid) {
+		APPID = appid;
+	}
 
 	// 解密微信发过来的密文
 	public static String decryptMsg(String msgSignature, String timeStamp, String nonce, String encrypt_msg) {
@@ -89,10 +109,4 @@ public class CryptoUtil {
 		return null;
 	}
 
-	public static String getAccessToken() {
-		String path = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=APPID&secret=APPSECRET";
-		path.replace("APPID", APPID);
-		path.replace("APPSECRET", APPSECRET);
-		return HttpUtil.doGet(path);
-	}
 }
