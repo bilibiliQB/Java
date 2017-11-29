@@ -13,10 +13,10 @@
 	<context:annotation-config />
 
 	<!-- 注解自动扫描 -->
-	<context:component-scan base-package="com.lily" />
+	<context:component-scan base-package="com.lily.*" />
 
 	<!-- 配置数据源 --><!-- 暂时不用 -->
-	<context:property-placeholder location="classpath:config.properties"/>
+	<context:property-placeholder location="classpath:config.properties" />
 	<bean id="dataSource" class="${jdbc.dataSource}">
 		<property name="driverClassName" value="${jdbc.driverClassName}"></property>
 		<property name="url" value="${jdbc.url}"></property>
@@ -40,5 +40,34 @@
 	</bean>
 	<!-- 把事务交给spring -->
 	<tx:annotation-driven transaction-manager="transactionManager" />
+
+	<!-- 计划任务 -->
+	<bean name="UpdateAccessTokenScheduledJob"
+		class="org.springframework.scheduling.quartz.JobDetailFactoryBean">
+		<property name="jobClass"
+			value="com.lily.scheduler.jobs.UpdateAccessTokenScheduledJob" />
+		<property name="durability" value="true" />
+	</bean>
+
+	<!-- 服务启动后1秒执行一次，然后每隔7000秒执行一次 -->
+	<bean id="updateJob"
+		class="org.springframework.scheduling.quartz.SimpleTriggerFactoryBean">
+		<property name="jobDetail" ref="UpdateAccessTokenScheduledJob" />
+		<property name="startDelay" value="1000" />
+		<property name="repeatInterval" value="7000000" />
+	</bean>
+
+	<bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+		<property name="jobDetails">
+			<list>
+				<ref bean="UpdateAccessTokenScheduledJob" />
+			</list>
+		</property>
+		<property name="triggers">
+			<list>
+				<ref bean="updateJob" />
+			</list>
+		</property>
+	</bean>
 </beans>
 

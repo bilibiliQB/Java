@@ -16,6 +16,9 @@ import com.weixin.aes.WXBizMsgCrypt;
 @Component
 @PropertySource("classpath:config.properties")
 public class CryptoUtil {
+	
+	private CryptoUtil(){
+	}
 
 	// TOKEN
 	private static String TOKEN;

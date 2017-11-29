@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lily.mapper.AccessTokenMapper">
+	<resultMap type="com.lily.pojo.AccessToken" id="AccessTokenBean">
+		<id column="id" property="id" />
+		<result column="access_token" property="access_token" />
+	</resultMap>
+	<select id="getAccessToken" resultMap="AccessTokenBean">
+	   <![CDATA[
+	       select * from accesstoken;
+	   ]]>
+	</select>
+	<update id="updateAccessToken" parameterType="com.lily.pojo.AccessToken">
+	   <![CDATA[
+	       update accesstoken set access_token = #{access_token,jdbcType = VARCHAR}
+	   ]]>
+	</update>
+</mapper>
