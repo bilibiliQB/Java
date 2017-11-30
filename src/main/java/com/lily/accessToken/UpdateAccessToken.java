@@ -1,6 +1,5 @@
 package com.lily.accessToken;
 
-import java.util.Date;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
@@ -44,14 +43,16 @@ public class UpdateAccessToken {
 	}
 
 	public static void updateAccessToken() throws AccessTokenException {
-		String path = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=APPID&secret=APPSECRET";
-		path.replace("APPID", APPID);
-		path.replace("APPSECRET", APPSECRET);
-		String result = HttpUtil.doGet(path);
+		StringBuffer url = new StringBuffer();
+		url.append("https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=");
+		url.append(APPID);
+		url.append("&secret=");
+		url.append(APPSECRET);
+		String result = HttpUtil.doGet(url.toString());
 		Gson gs = new Gson();
 		Map<String, String> map = gs.fromJson(result, new TypeToken<Map<String, String>>() {
 		}.getType());
-		String access_token = new Date().toString();
+		String access_token = map.get("access_token");
 		if (access_token != null) {
 			System.out.println("access_token为:" + access_token);
 			// 把所得到的结果存入数据库
@@ -59,6 +60,7 @@ public class UpdateAccessToken {
 			// 或把所得结果存入文件
 			SaveToFile(access_token);
 		} else {
+			System.out.println("errcode为:" + Integer.parseInt(map.get("errcode")));
 			// 发生错误
 			int errcode = Integer.parseInt(map.get("errcode"));
 			if (errcode == AccessTokenException.SystemBusyError) {
@@ -69,6 +71,8 @@ public class UpdateAccessToken {
 				throw new AccessTokenException(AccessTokenException.ValidateGrantTypeError);
 			} else if (errcode == AccessTokenException.ValidateIPError) {
 				throw new AccessTokenException(AccessTokenException.ValidateIPError);
+			} else if (errcode == AccessTokenException.ValidateAppIdError) {
+				throw new AccessTokenException(AccessTokenException.ValidateAppIdError);
 			}
 		}
 
