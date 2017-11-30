@@ -54,14 +54,10 @@ public class UpdateAccessToken {
 		}.getType());
 		String access_token = map.get("access_token");
 		if (access_token != null) {
-			System.out.println("access_token为:" + access_token);
+			logger.info("access_token为:" + access_token);
 			// 把所得到的结果存入数据库
 			// SaveToDataBase(access_token);
-			// 或把所得结果存入文件
-			SaveToFile(access_token);
 		} else {
-			System.out.println("errcode为:" + Integer.parseInt(map.get("errcode")));
-			// 发生错误
 			int errcode = Integer.parseInt(map.get("errcode"));
 			if (errcode == AccessTokenException.SystemBusyError) {
 				throw new AccessTokenException(AccessTokenException.SystemBusyError);
@@ -85,7 +81,4 @@ public class UpdateAccessToken {
 		}
 	}
 
-	private static void SaveToFile(String access_token) {
-
-	}
 }
