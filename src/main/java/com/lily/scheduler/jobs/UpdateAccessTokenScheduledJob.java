@@ -17,14 +17,12 @@ public class UpdateAccessTokenScheduledJob extends QuartzJobBean {
 	@Override
 	protected void executeInternal(JobExecutionContext arg0) throws JobExecutionException {
 		System.out.println("AccessToken更新时间：" + new Date());
-/*
 		try {
 			UpdateAccessToken.updateAccessToken();
 		} catch (AccessTokenException e) {
 			logger.error("更新AccessToken发生错误");
 			e.printStackTrace();
 		}
-*/
 	}
 
 }
