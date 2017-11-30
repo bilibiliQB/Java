@@ -1,12 +1,11 @@
 package com.lily.pojo;
 
 public class AccessToken {
-	
-	// 此处应与数据库的唯一一条信息的ID相同
-	private Integer id = 10000;
+
+	private Integer id;
 
 	private String access_token;
-	
+
 	public AccessToken() {
 		super();
 	}
@@ -31,5 +30,5 @@ public class AccessToken {
 	public void setAccess_token(String access_token) {
 		this.access_token = access_token;
 	}
-	
+
 }

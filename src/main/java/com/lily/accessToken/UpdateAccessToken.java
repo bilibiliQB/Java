@@ -1,5 +1,6 @@
 package com.lily.accessToken;
 
+import java.util.Date;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
@@ -50,11 +51,11 @@ public class UpdateAccessToken {
 		Gson gs = new Gson();
 		Map<String, String> map = gs.fromJson(result, new TypeToken<Map<String, String>>() {
 		}.getType());
-		String access_token = map.get("access_token");
+		String access_token = new Date().toString();
 		if (access_token != null) {
 			System.out.println("access_token为:" + access_token);
 			// 把所得到的结果存入数据库
-			SaveToDataBase(access_token);
+			// SaveToDataBase(access_token);
 			// 或把所得结果存入文件
 			SaveToFile(access_token);
 		} else {
