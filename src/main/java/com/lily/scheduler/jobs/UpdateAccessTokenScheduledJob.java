@@ -3,26 +3,28 @@ package com.lily.scheduler.jobs;
 import java.util.Date;
 
 import org.apache.log4j.Logger;
+import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
-import org.springframework.scheduling.quartz.QuartzJobBean;
 
-import com.lily.accessToken.AccessTokenException;
 import com.lily.accessToken.UpdateAccessToken;
 
-public class UpdateAccessTokenScheduledJob extends QuartzJobBean {
-	
+public class UpdateAccessTokenScheduledJob implements Job {
+
 	private static Logger logger = Logger.getLogger(UpdateAccessTokenScheduledJob.class);
 
+	private UpdateAccessToken updateAccessToken = UpdateAccessToken.getUpdateAccessToken();
+
 	@Override
-	protected void executeInternal(JobExecutionContext arg0) throws JobExecutionException {
+	public void execute(JobExecutionContext context) throws JobExecutionException {
 		try {
-			UpdateAccessToken.updateAccessToken();
+			updateAccessToken.execute();
 			logger.info("AccessToken更新时间：" + new Date());
-		} catch (AccessTokenException e) {
+		} catch (Exception e) {
 			logger.error("AccessToken获取错误");
 			e.printStackTrace();
 		}
+
 	}
 
 }

@@ -4,45 +4,42 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
-import org.springframework.stereotype.Component;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.lily.service.AccessTokenService;
 import com.lily.util.HttpUtil;
 
-@Component
-@PropertySource("classpath:config.properties")
-public class UpdateAccessToken {
+public class UpdateAccessToken{
 
+	@Autowired
+	public AccessTokenService accessTokenService;
+	
 	private static Logger logger = Logger.getLogger(UpdateAccessToken.class);
 
-	private static AccessTokenService accessTokenService;
-	
-	@Autowired
-	private void setAccessTokenService(AccessTokenService accessTokenService) {
-		UpdateAccessToken.accessTokenService = accessTokenService;
-	}
-
 	// 应用的AppId
-	private static String APPID;
-
-	@Value("${wx.appid}")
-	private void setAPPID(String appid) {
-		APPID = appid;
-	}
+	private String APPID;
 
 	// APPSECRET
-	private static String APPSECRET;
+	private String APPSECRET;
 
-	@Value("${wx.appsecret}")
-	private void setAPPSECRET(String appsecret) {
-		APPSECRET = appsecret;
+	private static UpdateAccessToken updateAccessToken;
+
+	private UpdateAccessToken() {
+		System.out.println("=============================================");
+		System.out.println(accessTokenService);
 	}
 
-	public static void updateAccessToken() throws AccessTokenException {
+	public static UpdateAccessToken getUpdateAccessToken() {
+		if (updateAccessToken == null) {
+			updateAccessToken = new UpdateAccessToken();
+			return updateAccessToken;
+		} else {
+			return updateAccessToken;
+		}
+	}
+
+	public void execute() throws AccessTokenException {
 		StringBuffer url = new StringBuffer();
 		url.append("https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=");
 		url.append(APPID);
@@ -59,6 +56,7 @@ public class UpdateAccessToken {
 			// SaveToDataBase(access_token);
 		} else {
 			int errcode = Integer.parseInt(map.get("errcode"));
+			logger.error("错误信息为:" + map.get("errmsg"));
 			if (errcode == AccessTokenException.SystemBusyError) {
 				throw new AccessTokenException(AccessTokenException.SystemBusyError);
 			} else if (errcode == AccessTokenException.ValidateAppSecretError) {
@@ -74,7 +72,7 @@ public class UpdateAccessToken {
 
 	}
 
-	private static void SaveToDataBase(String access_token) {
+	private void SaveToDataBase(String access_token) {
 		int num = accessTokenService.updateAccessToken(access_token);
 		if (num == 0) {
 			logger.error("access_token存到数据库时发生错误");
