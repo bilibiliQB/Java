@@ -4,42 +4,42 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.lily.config.WXConfig;
 import com.lily.service.AccessTokenService;
 import com.lily.util.HttpUtil;
 
-public class UpdateAccessToken{
+@Component
+public class UpdateAccessToken {
+
+	private static AccessTokenService accessTokenService;
 
 	@Autowired
-	public AccessTokenService accessTokenService;
-	
+	private void setAccessTokenService(AccessTokenService accessTokenService) {
+		UpdateAccessToken.accessTokenService = accessTokenService;
+	}
+
+	@Autowired
+	private void setProperty(WXConfig wxConfig) {
+		APPID = wxConfig.getAppid();
+		APPSECRET = wxConfig.getAppsecret();
+	}
+
 	private static Logger logger = Logger.getLogger(UpdateAccessToken.class);
 
 	// 应用的AppId
-	private String APPID;
+	private static String APPID;
 
 	// APPSECRET
-	private String APPSECRET;
-
-	private static UpdateAccessToken updateAccessToken;
+	private static String APPSECRET;
 
 	private UpdateAccessToken() {
-		System.out.println("=============================================");
-		System.out.println(accessTokenService);
 	}
 
-	public static UpdateAccessToken getUpdateAccessToken() {
-		if (updateAccessToken == null) {
-			updateAccessToken = new UpdateAccessToken();
-			return updateAccessToken;
-		} else {
-			return updateAccessToken;
-		}
-	}
-
-	public void execute() throws AccessTokenException {
+	public static void execute() throws AccessTokenException {
 		StringBuffer url = new StringBuffer();
 		url.append("https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=");
 		url.append(APPID);
@@ -72,7 +72,7 @@ public class UpdateAccessToken{
 
 	}
 
-	private void SaveToDataBase(String access_token) {
+	private static void SaveToDataBase(String access_token) {
 		int num = accessTokenService.updateAccessToken(access_token);
 		if (num == 0) {
 			logger.error("access_token存到数据库时发生错误");

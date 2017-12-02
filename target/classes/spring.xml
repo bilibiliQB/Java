@@ -1,18 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
 	xmlns:context="http://www.springframework.org/schema/context"
-	xmlns:mvc="http://www.springframework.org/schema/mvc"
-	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:tx="http://www.springframework.org/schema/tx"
 	xmlns:aop="http://www.springframework.org/schema/aop"
 	xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.1.xsd
 		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.1.xsd
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.1.xsd
 		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.1.xsd
 		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.1.xsd">
-	<!-- 使用注解式注入 -->
-	<context:annotation-config />
 
 	<!-- 注解自动扫描 -->
 	<context:component-scan base-package="com.lily" />
@@ -27,11 +23,15 @@
 	</bean>
 
 	<!-- 微信配置文件 -->
-	<bean id="wxConfig" class="com.lily.config.WXConfig" scope="singleton">
+	<bean id="wxConfig" class="com.lily.config.WXConfig">
 		<constructor-arg value="${wx.token}" />
 		<constructor-arg value="${wx.encodingaeskey}" />
 		<constructor-arg value="${wx.appid}" />
 		<constructor-arg value="${wx.appsecret}" />
+	</bean>
+	<!-- 图灵机器人配置文件 -->
+	<bean id="tlConfig" class="com.lily.config.TLConfig">
+		<constructor-arg value="${tuling.key}" />
 	</bean>
 
 	<!-- 配置sqlSession -->

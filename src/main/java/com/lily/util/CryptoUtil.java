@@ -6,15 +6,14 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.lily.config.WXConfig;
 import com.weixin.aes.AesException;
 import com.weixin.aes.WXBizMsgCrypt;
 
 @Component
-@PropertySource("classpath:config.properties")
 public class CryptoUtil {
 	
 	private CryptoUtil(){
@@ -23,25 +22,17 @@ public class CryptoUtil {
 	// TOKEN
 	private static String TOKEN;
 
-	@Value("${wx.token}")
-	private void setTOKEN(String token) {
-		TOKEN = token;
-	}
-
 	// 微信生成的 ASEKey
 	private static String ENCODINGAESKEY;
 
-	@Value("${wx.encodingaeskey}")
-	private void setENCODINGAESKEY(String encodingaeskey) {
-		ENCODINGAESKEY = encodingaeskey;
-	}
-
 	// 应用的AppId
 	private static String APPID;
-
-	@Value("${wx.appid}")
-	private void setAPPID(String appid) {
-		APPID = appid;
+	
+	@Autowired
+	private void setProperty(WXConfig wxConfig) {
+		TOKEN = wxConfig.getToken();
+		ENCODINGAESKEY = wxConfig.getEncodingaeskey();
+		APPID = wxConfig.getAppid();
 	}
 
 	// 解密微信发过来的密文

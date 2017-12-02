@@ -13,12 +13,10 @@ public class UpdateAccessTokenScheduledJob implements Job {
 
 	private static Logger logger = Logger.getLogger(UpdateAccessTokenScheduledJob.class);
 
-	private UpdateAccessToken updateAccessToken = UpdateAccessToken.getUpdateAccessToken();
-
 	@Override
 	public void execute(JobExecutionContext context) throws JobExecutionException {
 		try {
-			updateAccessToken.execute();
+			UpdateAccessToken.execute();
 			logger.info("AccessToken更新时间：" + new Date());
 		} catch (Exception e) {
 			logger.error("AccessToken获取错误");
